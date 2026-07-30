@@ -1,18 +1,18 @@
-
+ 
 import sys
 import subprocess
 from pathlib import Path
 from datetime import date
 import pandas as pd
  
-
+# ----------------------------------------------------------------------
+# CONFIGURAÇÃO
+# ----------------------------------------------------------------------
+ 
 FTP_BASE = "ftp://ftp.mtps.gov.br/pdet/microdados/NOVO%20CAGED"
-DOWNLOAD_DIR = Path(__file__).parent / "dados" 
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
-DATASET_ID = os.environ.get("GCP_DATASET_ID", "caged_pressao_salarial")
-
-if not PROJECT_ID:
-    raise ValueError("GCP_PROJECT_ID não definido. Crie um .env com essa variável (veja .env.example).")
+DOWNLOAD_DIR = Path(__file__).parent / "dados"  # pasta local do projeto (não Downloads)
+PROJECT_ID = "caged-pressao-salarial"        # projeto real no GCP
+DATASET_ID = "caged_pressao_salarial"        # nome do dataset no BigQuery
 TABLE_MENSAL = "movimentacao_mensal"         # série mensal agregada (2020-hoje) - pra ML e gráfico de linha do BI
 TABLE_PESSOA = "movimentacao_pessoa"         # detalhe por pessoa (2025-05 em diante) - pra drill-down no BI
 TABLE_CBO = "dim_cbo"                        # de-para ocupação
@@ -23,16 +23,24 @@ TABLE_UF = "dim_uf"                          # de-para UF
 # por pessoa - meses antes disso só entram na tabela mensal agregada
 PESSOA_INICIO = "202505"
  
-# teto de sanidade pro salário individual 
+# teto de sanidade pro salário individual - acima disso, é praticamente
+# certo que é erro de digitação na declaração original do CAGED
+# (encontramos registros na casa de R$ 1 bilhão+ nos dados reais)
 SALARIO_TETO = 100_000
-
+ 
+# arquivos de-para locais (exportados uma vez dos layouts do MTE pra CSV -
+# veja instruções na função carregar_dims() abaixo)
 DIM_CBO_PATH = Path(__file__).parent / "dim_cbo.csv"
 DIM_MUNICIPIO_PATH = Path(__file__).parent / "dim_municipio.csv"
 DIM_UF_PATH = Path(__file__).parent / "dim_uf.csv"
  
 DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
  
-
+ 
+# ----------------------------------------------------------------------
+# 1. DOWNLOAD + EXTRAÇÃO
+# ----------------------------------------------------------------------
+ 
 def competencia_mais_recente() -> str:
     """
     Estima a competência (AAAAMM) mais recente provavelmente disponível.
@@ -90,6 +98,10 @@ def extrair_7z(caminho_7z: Path) -> Path:
     return txt_esperado
  
  
+# ----------------------------------------------------------------------
+# 2. TRATAMENTO E AGREGAÇÃO
+# ----------------------------------------------------------------------
+ 
 COLUNAS_NECESSARIAS = [
     "competênciamov", "uf", "município", "cbo2002ocupação",
     "salário", "saldomovimentação",
@@ -117,6 +129,7 @@ def agregar_mensal(caminho_txt: Path, tamanho_chunk: int = 500_000) -> pd.DataFr
     for i, chunk in enumerate(leitor):
         chunk["tipo"] = chunk["saldomovimentação"].map({1: "admissao", -1: "desligamento"})
         chunk = chunk.dropna(subset=["tipo"])
+        chunk["salário"] = pd.to_numeric(chunk["salário"], errors="coerce")
  
         agg_total = (
             chunk.groupby(["competênciamov", "uf", "município", "tipo"])
@@ -192,6 +205,7 @@ def tratar_microdado(caminho_txt: Path, tamanho_chunk: int = 500_000) -> pd.Data
     for i, chunk in enumerate(leitor):
         chunk["tipo"] = chunk["saldomovimentação"].map({1: "admissao", -1: "desligamento"})
         chunk = chunk.dropna(subset=["tipo"])
+        chunk["salário"] = pd.to_numeric(chunk["salário"], errors="coerce")
  
         zerado_negativo = chunk["salário"] <= 0
         acima_teto = chunk["salário"] > SALARIO_TETO
@@ -237,7 +251,7 @@ def enriquecer_com_dims(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
  
-    # ano/mes como inteiros, além do DATE, facilita filtro no Looker
+    # ano/mes como inteiros, além do DATE - facilita filtro no Looker
     df["ano"] = pd.to_datetime(df["competencia"]).dt.year
     df["mes"] = pd.to_datetime(df["competencia"]).dt.month
  
@@ -301,7 +315,11 @@ def preparar_dims_locais():
     uf.to_csv(DIM_UF_PATH, index=False)
     print(f"Gerado: {DIM_UF_PATH} ({len(uf)} linhas)")
  
-
+ 
+# ----------------------------------------------------------------------
+# 3. UPLOAD PRO BIGQUERY
+# ----------------------------------------------------------------------
+ 
 def subir_bigquery(df: pd.DataFrame, tabela: str, modo: str = "append"):
     """
     Sobe um DataFrame pro BigQuery.
@@ -322,7 +340,7 @@ def subir_bigquery(df: pd.DataFrame, tabela: str, modo: str = "append"):
  
     print(f"Subindo {len(df)} linhas para {tabela_id} (modo={modo}) ...")
     job = cliente.load_table_from_dataframe(df, tabela_id, job_config=config)
-    job.result()  
+    job.result()  # espera terminar
     print(f"Concluído: {tabela_id}")
  
  
@@ -339,7 +357,18 @@ def subir_tabelas_de_para():
     cbo.columns = ["cbo", "descricao_ocupacao"]
     subir_bigquery(cbo, TABLE_CBO, modo="replace")
  
-
+    # Município está no arquivo .numbers - exporte antes pra .xlsx ou .csv
+    # pelo próprio Numbers (Arquivo > Exportar Para > Excel), ou use a lib
+    # numbers-parser em Python se preferir automatizar isso também.
+    # municipio = pd.read_excel("municipio.xlsx")
+    # municipio.columns = ["municipio_codigo", "descricao_municipio"]
+    # subir_bigquery(municipio, TABLE_MUNICIPIO, modo="replace")
+ 
+ 
+# ----------------------------------------------------------------------
+# EXECUÇÃO
+# ----------------------------------------------------------------------
+ 
 def listar_competencias(inicio: str, fim: str) -> list[str]:
     """Gera a lista de competências (AAAAMM) entre inicio e fim, inclusive."""
     ano_i, mes_i = int(inicio[:4]), int(inicio[4:])
@@ -362,12 +391,12 @@ def rodar(competencia: str = None, manter_arquivos: bool = False):
     caminho_7z = baixar_7z(competencia)
     caminho_txt = extrair_7z(caminho_7z)
  
-    # tabela mensal (leve), sempre gerada, é a base do histórico pro ML
+    # tabela mensal (leve) - sempre gerada, é a base do histórico pro ML
     df_mensal = enriquecer_com_dims(agregar_mensal(caminho_txt))
     subir_bigquery(df_mensal, TABLE_MENSAL, modo="append")
  
-    # tabela por pessoa (detalhada), só a partir de PESSOA_INICIO,
-
+    # tabela por pessoa (detalhada) - só a partir de PESSOA_INICIO,
+    # pra não estourar o limite de armazenamento à toa
     if competencia >= PESSOA_INICIO:
         df_pessoa = enriquecer_com_dims(tratar_microdado(caminho_txt))
         subir_bigquery(df_pessoa, TABLE_PESSOA, modo="append")
@@ -395,8 +424,8 @@ def rodar_intervalo(inicio: str, fim: str, manter_arquivos: bool = False):
     for comp in competencias:
         try:
             rodar(comp, manter_arquivos=manter_arquivos)
-        except RuntimeError as e:
-            print(f"[AVISO] Falha em {comp}, pulando: {e}")
+        except Exception as e:
+            print(f"[AVISO] Falha em {comp}, pulando: {type(e).__name__}: {e}")
             falhas.append(comp)
  
     print("=== Intervalo concluído ===")
