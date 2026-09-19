@@ -1,11 +1,14 @@
-
-SELECT * FROM (
-  SELECT
-    t.ano, t.mes, fato.tipo,
-    COUNT(*) AS qtd_movimentacao,
-    RANK() OVER (PARTITION BY fato.tipo ORDER BY COUNT(*) DESC) AS posicao
-  FROM `caged_pressao_salarial.fct_movimentacao` fato
-  JOIN `caged_pressao_salarial.dim_tempo` t ON fato.sk_tempo = t.sk_tempo
-  GROUP BY t.ano, t.mes, fato.tipo
+-- Pergunta 1: 2. Qual a rotatividade absoluta na indústria elétrica de junho a dezembro de 2025?
+WITH eletricidade AS (
+SELECT t.ano, t.mes, fato.tipo, 
+FROM `caged_pressao_salarial.fct_movimentacao` fato
+JOIN `caged_pressao_salarial.dim_setor` s ON fato.sk_setor = s.sk_setor 
+JOIN `caged_pressao_salarial.dim_tempo` t ON fato.sk_tempo = t.sk_tempo
+WHERE s.descricao_secao = "Eletricidade E Gás"
 )
-WHERE posicao = 1
+
+SELECT ano, mes, (COUNT(CASE WHEN tipo = 'admissao' THEN 1 END) + COUNT(CASE WHEN tipo = 'desligamento' THEN 1 END))/2 AS rotatitividade_absoluta
+FROM eletricidade
+WHERE ano = 2025 AND mes BETWEEN 06 AND 12
+GROUP BY ano, mes
+ORDER BY mes ASC; 

@@ -1,4 +1,4 @@
-
+-- Pergunta 1: Qual o mês de mais admissões e qual o mês de mais desligamentos na indústria nordestina nesses 13 meses?
 SELECT * FROM (
   SELECT
     t.ano, t.mes, fato.tipo,
