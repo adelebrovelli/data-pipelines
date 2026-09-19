@@ -1,6 +1,6 @@
--- Pergunta 1: 2. Qual a rotatividade absoluta na indústria elétrica de junho a dezembro de 2025?
+-- Pergunta 2: Qual a rotatividade absoluta na indústria elétrica de junho a dezembro de 2025?
 WITH eletricidade AS (
-SELECT t.ano, t.mes, fato.tipo, 
+SELECT t.ano, t.mes, fato.tipo
 FROM `caged_pressao_salarial.fct_movimentacao` fato
 JOIN `caged_pressao_salarial.dim_setor` s ON fato.sk_setor = s.sk_setor 
 JOIN `caged_pressao_salarial.dim_tempo` t ON fato.sk_tempo = t.sk_tempo
