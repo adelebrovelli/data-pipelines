@@ -1,0 +1,12 @@
+-- Pergunta 4: 4. Quais ocupações tiveram o maior saldo de contratações em março?
+SELECT
+  o.descricao_ocupacao,
+  SUM(tipo_sinal) AS saldo, t.mes, t.ano
+FROM `caged-pressao-salarial.caged_pressao_salarial.fct_movimentacao` fato
+JOIN `caged-pressao-salarial.caged_pressao_salarial.dim_tempo` t
+  ON fato.sk_tempo = t.sk_tempo
+  JOIN `caged-pressao-salarial.caged_pressao_salarial.dim_ocupacao` o
+  ON fato.sk_ocupacao = o.sk_ocupacao
+WHERE t.mes = 03 AND t.ano = 2026
+GROUP BY o.descricao_ocupacao, t.mes, t.ano
+ORDER BY saldo DESC; 
