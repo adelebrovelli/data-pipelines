@@ -1,0 +1,21 @@
+-- Pergunta 6: Quais são as 10 ocupações de maior pressão salarial no Nordeste?
+WITH indice_mensal AS (
+  SELECT
+    o.descricao_ocupacao,
+    t.competencia,
+    ROUND(
+      AVG(CASE WHEN fato.ind_tipo = 1 THEN fato.salario END)
+      / NULLIF(AVG(CASE WHEN fato.ind_tipo = -1 THEN fato.salario END), 0)
+    * 100, 1) AS indice_pressao_salarial
+  FROM `caged-pressao-salarial.caged_pressao_salarial.fct_movimentacao` fato
+  JOIN `caged-pressao-salarial.caged_pressao_salarial.dim_ocupacao` o
+    ON fato.sk_ocupacao = o.sk_ocupacao
+  JOIN `caged-pressao-salarial.caged_pressao_salarial.dim_tempo` t
+    ON fato.sk_tempo = t.sk_tempo
+  GROUP BY o.descricao_ocupacao, t.competencia
+)
+SELECT *
+FROM indice_mensal
+WHERE competencia = (SELECT MAX(competencia) FROM indice_mensal)
+ORDER BY indice_pressao_salarial DESC
+LIMIT 10;
