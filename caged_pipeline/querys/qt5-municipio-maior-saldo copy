@@ -1,4 +1,4 @@
--- Pergunta 6: Quais são as 10 ocupações de maior pressão salarial no Nordeste?
+-- Pergunta 6: Quais são as 10 ocupações de maior pressão salarial no Nordeste no mês mais recente?
 WITH indice_mensal AS (
   SELECT
     o.descricao_ocupacao,
