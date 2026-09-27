@@ -1,4 +1,4 @@
--- Pergunta 4: 4. Quais ocupações tiveram o maior saldo de contratações em março?
+-- Pergunta 4: Quais ocupações tiveram o maior saldo de contratações em março?
 SELECT
   o.descricao_ocupacao,
   SUM(tipo_sinal) AS saldo, t.mes, t.ano
