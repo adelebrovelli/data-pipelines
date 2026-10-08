@@ -1,5 +1,5 @@
 -- Pergunta 7: Qual dos 9 estados do Nordeste apresentou maior taxa de admissão desde o último ano?
-WIth base_query_nordeste AS (
+WITH base_query_nordeste AS (
   SELECT m.sigla_uf AS estado, t.competencia, fato.tipo_sinal
   FROM `caged-pressao-salarial.caged_pressao_salarial.fct_movimentacao` fato
   JOIN `caged-pressao-salarial.caged_pressao_salarial.dim_municipio` m ON fato.sk_municipio = m.sk_municipio

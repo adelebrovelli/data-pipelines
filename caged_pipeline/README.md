@@ -6,13 +6,13 @@ Linha	ano	    mes	    tipo	        qtd_movimentacao
 1	    2025    9	    admissao	    348856	
 2	    2026	3	    desligamento    316814	
 
-**Comentário:** Setembro de 2025 foi o mês com maior número de admissões e março de 2026 o mês de desligamentos.
+**Comentário:** Setembro de 2025 foi o mês com maior número de admissões e março de 2026 foi o com maior número de mês de desligamentos.
 
 ## 2. Qual a rotatividade absoluta na indústria elétrica de junho a dezembro de 2025?
 
 **Query:** [`qt2-rotatividade.sql`](queries/qt2-rotatividade.sql)
 
-Linha	ano	mes	rotatitividade_absoluta
+Linha	ano	mes	rotatividade_absoluta
 1	2025	6	400.0
 2	2025	7	361.0
 3	2025	8	387.5
@@ -21,21 +21,21 @@ Linha	ano	mes	rotatitividade_absoluta
 6	2025	11	415.0
 7	2025	12	361.0
 
-**Comentário:** Em 2025 a indústria elétrica teve julho e dezembro com pontos negativos e outubro como maior pico de rotatividade de funcionários.
+**Comentário:** Em 2025 a indústria elétrica teve julho e dezembro com pontos de rotatividade mais baixos e outubro como maior pico de rotatividade de funcionários.
 
 ## 3. Qual setor está pagando mais entre Indústria e Serviços?
 
-**Query** [`qt3-industria-ou-servicos.sql`](queries/qt3-industria-ou-servicos.sql)
+**Query:** [`qt3-industria-ou-servicos.sql`](queries/qt3-industria-ou-servicos.sql)
 
 Linha grande_grupamento	media_salarial	    mediana_salarial
 1     Indústria Geral	1975.6760262748123	1621.0
 2     Serviços	        1966.2239702746467	1621.0	
 
-**Comentário** Indústria Geral e Serviços tem médias muito similares, e a grande maioria dos salários equivale a um salário mínimo para ambos os setores, mas o valor do salário da Indústria ainda é maior, chegando a R$1.975,67, 11 reais a mais do que o salário do setor de Serviços, R$1.966,22.
+**Comentário:** Indústria Geral e Serviços tem médias muito similares. A mediana sugere que grande parte receba cerca de um salário mínio. O valor do salário da Indústria ainda é maior do que Serviços, chegando a R$1.975,68, cerca de 9 reais a mais do que o salário do setor de Serviços, R$1.966,22.
 
 ## 4. Quais ocupações tiveram o maior saldo de contratações em março?
 
-**Query** [`qt4-ocupacoes-maior-saldo.sql`](queries/qt4-ocupacoes-maior-saldo.sql)
+**Query:** [`qt4-ocupacoes-maior-saldo.sql`](queries/qt4-ocupacoes-maior-saldo.sql)
 
 Linha	descricao_ocupacao	                        saldo  mes	ano
 1	    Servente De Obras	                        5087	3	2026
@@ -44,37 +44,51 @@ Linha	descricao_ocupacao	                        saldo  mes	ano
 4	    Operador De Telemarketing Ativo E Receptivo	2370	3	2026
 5	    Auxiliar De Escritorio, Em Geral	        2293	3	2026
 
-**Comentário** Servente de obras e faxineiro tiveram os maiores salários do mês em 2026.
+**Comentário:** Servente de obras e faxineiro tiveram os maiores saldos do mês em 2026.
 
 ## 5.  Qual município nordestino tem o maior saldo em relação ao total da região nesses últimos 13 meses?
 
-**Query** [`qt5-municipio-maior-saldo.sql`](queries/qt5-municipio-maior-saldo.sql)
+**Query:** [`qt5-municipio-maior-saldo.sql`](queries/qt5-municipio-maior-saldo.sql)
 
-Linha	descricao_municipio	saldo	saldo_total_nordeste
-1	    Ba-Salvador	        27807	343730
-2	    Ce-Fortaleza	    21816	343730
-3	    Pe-Recife	        20976	343730
-4	    Ma-Sao Luis     	19180	343730
-5	    Pb-Joao Pessoa	    12484	343730	
+| descricao_municipio | saldo | saldo_total_nordeste |
+|---|---|---|
+| Ba-Salvador | 27807 | 343730 |
+| Ce-Fortaleza | 21816 | 343730 |
+| Pe-Recife | 20976 | 343730 |
+| Ma-Sao Luis | 19180 | 343730 |
+| Pb-Joao Pessoa | 12484 | 343730 |
 
-**Comentário** Salvador foi o município de maior saldo, chegando a um saldo equivalente a 27.807 empregos, ficando atrás apenas de Fortaleza, com 21.816.
+**Comentário:** Salvador foi o município de maior saldo, chegando a um saldo equivalente a 27.807 empregos, ficando na frente de Fortaleza, com 21.816. Logo, Salvador sozinho traz a proporção de 8,1% em relação à região.
 
 ## 6. Quais são as 10 ocupações de maior pressão salarial no Nordeste no mês mais recente?
 
-**Query** [`qt6-pressao-salarial-municipio.sql`](queries/qt6-pressao-salarial-municipio.sql)
+**Query:** [`qt6-pressao-salarial-ocupacao.sql`](queries/qt6-pressao-salarial-ocupacao.sql)
 
-Linha	descricao_ocupacao	                        ano	   mes qtd_admissao	qtd_desligamento indice_pressao_salarial
-1	Professor De Artes No Ensino Medio	            2026	5	15	    14	366.5
-2	Socioeducador	                                2026	5	35	    24	253.5
-3	Professor De Historia Do Ensino Fundamental	    2026	5	41	    26	239.3
-4	Mecanico De Manutencao De Aeronaves, Em Geral   2026	5	11	    9	220.9
-5	Professor De Linguas Estrangeiras Modernas	    2026	5	12	    5	214.0
-6	Supervisor De Orcamento	                        2026	5	12	    20	194.0
-7	Médico Anestesiologista	                        2026	5	8	    35	189.5
-8	Professor De Medicina	                        2026	5	9	    9	185.9
-9	Medico Veterinario	                            2026	5	25	    23	178.9
-10	Professor De Geografia Do Ensino Fundamental	2026	5	37	    28	178.3
+| descricao_ocupacao | ano | mes | qtd_admissao | qtd_desligamento | indice_pressao_salarial |
+|---|---|---|---|---|---|
+| Professor De Artes No Ensino Medio | 2026 | 5 | 15 | 14 | 366.5 |
+| Socioeducador | 2026 | 5 | 35 | 24 | 253.5 |
+| Professor De Historia Do Ensino Fundamental | 2026 | 5 | 41 | 26 | 239.3 |
+| Mecanico De Manutencao De Aeronaves, Em Geral | 2026 | 5 | 11 | 9 | 220.9 |
+| Professor De Linguas Estrangeiras Modernas | 2026 | 5 | 12 | 5 | 214.0 |
+| Supervisor De Orcamento | 2026 | 5 | 12 | 20 | 194.0 |
+| Médico Anestesiologista | 2026 | 5 | 8 | 35 | 189.5 |
+| Professor De Medicina | 2026 | 5 | 9 | 9 | 185.9 |
+| Medico Veterinario | 2026 | 5 | 25 | 23 | 178.9 |
+| Professor De Geografia Do Ensino Fundamental | 2026 | 5 | 37 | 28 | 178.3 |
 
-**Comentário** Professor de artes do ensino médio, no mês de maio de 2026, foi a ocupação que teve a maior pressão salarial do Nordeste (266.5), juntamente à socioeducador e professor de história do ensino fundamental.
+**Comentário:** Professor de artes do ensino médio, no mês de maio de 2026, foi a ocupação que teve a maior pressão salarial do Nordeste (366.5), seguida por socioeducador(253.5) e professor de história do ensino fundamental (239.3).
 
-## 7.
+## 7. Qual dos 9 estados do Nordeste apresentou maior taxa de admissão desde o último ano?
+
+**Query:** [`qt7-ranking-maior-admissao`](queries/qt7-ranking-maior-admissao.sql)
+
+| estado | taxa_admissao | rank_taxa_estado |
+|---|---|---|
+| Piauí | 0.5273 | 1 |
+| Sergipe | 0.5259 | 2 |
+| Paraíba | 0.5249 | 3 |
+| Pernambuco | 0.5247 | 4 |
+| Maranhão | 0.5241 | 5 |
+
+**Comentário:** O Piauí teve a maior taxa de admissão do Nordeste, chegando a 52,7%, apesar de que os estados Sergipe, Paraíba, Pernambuco e Maranhão tiveram uma diferença máxima de 0.32 pontos percentuais do estado de maior taxa.

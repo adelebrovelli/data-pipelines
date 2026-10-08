@@ -7,7 +7,7 @@ JOIN `caged_pressao_salarial.dim_tempo` t ON fato.sk_tempo = t.sk_tempo
 WHERE s.descricao_secao = "Eletricidade E Gás"
 )
 
-SELECT ano, mes, (COUNT(CASE WHEN tipo = 'admissao' THEN 1 END) + COUNT(CASE WHEN tipo = 'desligamento' THEN 1 END))/2 AS rotatitividade_absoluta
+SELECT ano, mes, (COUNT(CASE WHEN tipo = 'admissao' THEN 1 END) + COUNT(CASE WHEN tipo = 'desligamento' THEN 1 END))/2 AS rotatividade_absoluta
 FROM eletricidade
 WHERE ano = 2025 AND mes BETWEEN 06 AND 12
 GROUP BY ano, mes
