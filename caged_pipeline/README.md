@@ -2,9 +2,10 @@
 
 **Query:** [`qt1-top-desligamentos-admissoes.sql`](queries/qt1-top-desligamentos-admissoes.sql)
 
-Linha	ano	    mes	    tipo	        qtd_movimentacao	
-1	    2025    9	    admissao	    348856	
-2	    2026	3	    desligamento    316814	
+| ano | mes | tipo | qtd_movimentacao |
+|---|---|---|---|
+| 2025 | 9 | admissao | 348856 |
+| 2026 | 3 | desligamento | 316814 |
 
 **Comentário:** Setembro de 2025 foi o mês com maior número de admissões e março de 2026 foi o com maior número de mês de desligamentos.
 
@@ -12,14 +13,15 @@ Linha	ano	    mes	    tipo	        qtd_movimentacao
 
 **Query:** [`qt2-rotatividade.sql`](queries/qt2-rotatividade.sql)
 
-Linha	ano	mes	rotatividade_absoluta
-1	2025	6	400.0
-2	2025	7	361.0
-3	2025	8	387.5
-4	2025	9	403.0
-5	2025	10	445.5
-6	2025	11	415.0
-7	2025	12	361.0
+| ano | mes | rotatividade_absoluta |
+|---|---|---|
+| 2025 | 6 | 400.0 |
+| 2025 | 7 | 361.0 |
+| 2025 | 8 | 387.5 |
+| 2025 | 9 | 403.0 |
+| 2025 | 10 | 445.5 |
+| 2025 | 11 | 415.0 |
+| 2025 | 12 | 361.0 |
 
 **Comentário:** Em 2025 a indústria elétrica teve julho e dezembro com pontos de rotatividade mais baixos e outubro como maior pico de rotatividade de funcionários.
 
@@ -27,9 +29,10 @@ Linha	ano	mes	rotatividade_absoluta
 
 **Query:** [`qt3-industria-ou-servicos.sql`](queries/qt3-industria-ou-servicos.sql)
 
-Linha grande_grupamento	media_salarial	    mediana_salarial
-1     Indústria Geral	1975.6760262748123	1621.0
-2     Serviços	        1966.2239702746467	1621.0	
+| grande_grupamento | media_salarial | mediana_salarial |
+|---|---|---|
+| Indústria Geral | 1975.68 | 1621.0 |
+| Serviços | 1966.22 | 1621.0 |
 
 **Comentário:** Indústria Geral e Serviços tem médias muito similares. A mediana sugere que grande parte receba cerca de um salário mínio. O valor do salário da Indústria ainda é maior do que Serviços, chegando a R$1.975,68, cerca de 9 reais a mais do que o salário do setor de Serviços, R$1.966,22.
 
@@ -37,12 +40,13 @@ Linha grande_grupamento	media_salarial	    mediana_salarial
 
 **Query:** [`qt4-ocupacoes-maior-saldo.sql`](queries/qt4-ocupacoes-maior-saldo.sql)
 
-Linha	descricao_ocupacao	                        saldo  mes	ano
-1	    Servente De Obras	                        5087	3	2026
-2	    Faxineiro	                                4026	3	2026
-3	    Alimentador De Linha De Producao	        2608	3	2026
-4	    Operador De Telemarketing Ativo E Receptivo	2370	3	2026
-5	    Auxiliar De Escritorio, Em Geral	        2293	3	2026
+| descricao_ocupacao | saldo | mes | ano |
+|---|---|---|---|
+| Servente De Obras | 5087 | 3 | 2026 |
+| Faxineiro | 4026 | 3 | 2026 |
+| Alimentador De Linha De Producao | 2608 | 3 | 2026 |
+| Operador De Telemarketing Ativo E Receptivo | 2370 | 3 | 2026 |
+| Auxiliar De Escritorio, Em Geral | 2293 | 3 | 2026 |
 
 **Comentário:** Servente de obras e faxineiro tiveram os maiores saldos do mês em 2026.
 
