@@ -12,11 +12,11 @@ Uso:
 
 import sys
 
-from config import PESSOA_INICIO, TABLE_MENSAL, TABLE_PESSOA
-from extract import baixar_7z, extrair_7z, competencia_mais_recente
-from transform import agregar_mensal, tratar_microdado
-from enrich import enriquecer_com_dims
-from load import subir_bigquery
+from caged_pipeline.pipeline.config import PESSOA_INICIO, TABLE_MENSAL, TABLE_PESSOA
+from caged_pipeline.pipeline.extract import baixar_7z, extrair_7z, competencia_mais_recente
+from caged_pipeline.pipeline.transform import agregar_mensal, tratar_microdado
+from caged_pipeline.pipeline.enrich import enriquecer_com_dims
+from caged_pipeline.pipeline.load import subir_bigquery
 
 
 def listar_competencias(inicio: str, fim: str) -> list[str]:

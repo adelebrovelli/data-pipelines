@@ -4,7 +4,7 @@ import subprocess
 from datetime import date
 from pathlib import Path
 
-from config import DOWNLOAD_DIR, FTP_BASE
+from caged_pipeline.pipeline.config import DOWNLOAD_DIR, FTP_BASE
 
 
 def competencia_mais_recente() -> str:

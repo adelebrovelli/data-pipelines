@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import (
+from caged_pipeline.pipeline.config import (
     DIM_CBO_PATH, DIM_MUNICIPIO_PATH, DIM_UF_PATH, DIM_SECAO_PATH,
     SECAO_PARA_GRUPAMENTO, GRANDE_GRUPAMENTO_PADRAO, BASE_DIR,
 )

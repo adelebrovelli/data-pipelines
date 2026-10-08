@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import COLUNAS_NECESSARIAS, SALARIO_TETO, UF_NORDESTE
+from caged_pipeline.pipeline.config import COLUNAS_NECESSARIAS, SALARIO_TETO, UF_NORDESTE
 
 
 def agregar_mensal(caminho_txt: Path, tamanho_chunk: int = 500_000) -> pd.DataFrame:

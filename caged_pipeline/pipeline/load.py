@@ -4,7 +4,7 @@ import pandas as pd
 from google.cloud import bigquery
 from google.cloud.bigquery import LoadJobConfig, WriteDisposition
 
-from config import PROJECT_ID, DATASET_ID
+from caged_pipeline.pipeline.config import PROJECT_ID, DATASET_ID
 
 
 def subir_bigquery(df: pd.DataFrame, tabela: str, modo: str = "append"):
